@@ -16,7 +16,9 @@ const authMiddleware = (req, res, next) => {
         next();
     } catch (error) {
         console.error('Error in authMiddleware:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(401).json({
+            error: 'Invalid or expired token'
+        });
     }
 }
 

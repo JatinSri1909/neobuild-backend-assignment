@@ -66,7 +66,7 @@ router.post('/enrich', authMiddleware, async (req, res) => {
                 });
             }
             if (error.message.includes('No text data detected')) {
-                return res.status(422).json({
+                return res.status(500).json({
                     status: 'error',
                     error: 'No readable text found in PDF'
                 });
@@ -78,7 +78,7 @@ router.post('/enrich', authMiddleware, async (req, res) => {
         try {
             resumeData = await analyzeResume(text);
         } catch (error) {
-            return res.status(422).json({
+            return res.status(500).json({
                 status: 'error',
                 error: 'Failed to analyze resume content',
                 details: error.message
@@ -163,7 +163,7 @@ router.post('/enrich', authMiddleware, async (req, res) => {
                 resumeData.name = decrypt(encryptedName);
                 resumeData.email = decrypt(encryptedEmail);
 
-                return res.status(201).json({
+                return res.status(200).json({
                     status: 'success',
                     message: 'Resume processed successfully',
                     data: resumeData
