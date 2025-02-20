@@ -1,0 +1,10 @@
+# Ignore files
+.env
+
+# Ignore directories
+
+/node_modules
+/dist
+/build
+
+

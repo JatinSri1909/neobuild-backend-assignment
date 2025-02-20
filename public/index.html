@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis API Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            background-color: #f5f7fa;
+            color: #2d3748;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c5282;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            background: #fff;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .container:hover {
+            transform: translateY(-2px);
+        }
+
+        h2 {
+            color: #2c5282;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .info-text {
+            color: #718096;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #edf2f7;
+            border-radius: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        button {
+            background-color: #4299e1;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2b6cb0;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-size: 0.9em;
+            position: relative;
+        }
+
+        .response:empty {
+            display: none;
+        }
+
+        .status {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .status.success {
+            display: block;
+            background-color: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .status.error {
+            display: block;
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-radius: 50%;
+            border-top-color: #4299e1;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Resume Analysis API Demo</h1>
+        <p>Test the Resume Analysis API endpoints</p>
+    </div>
+
+    <!-- Login Section -->
+    <div class="container">
+        <h2>1. Authentication</h2>
+        <div class="info-text">
+            Default credentials:<br>
+            Username: "naval.ravikant"<br>
+            Password: "05111974"
+        </div>
+        <input type="text" id="username" placeholder="Enter username">
+        <input type="text" id="password" placeholder="Enter password">
+        <button onclick="login()">Login</button>
+        <div class="loading" id="loginLoading"></div>
+        <div id="loginResponse" class="response"></div>
+    </div>
+
+    <!-- Resume Enrichment Section -->
+    <div class="container">
+        <h2>2. Resume Enrichment</h2>
+        <div class="info-text">
+            Test URL: https://www.dhli.in/uploaded_files/resumes/resume_3404.pdf
+        </div>
+        <input type="text" id="pdfUrl" placeholder="Enter PDF URL">
+        <button onclick="enrichResume()">Enrich Resume</button>
+        <div class="loading" id="enrichLoading"></div>
+        <div id="enrichResponse" class="response"></div>
+    </div>
+
+    <!-- Resume Search Section -->
+    <div class="container">
+        <h2>3. Resume Search</h2>
+        <input type="text" id="searchName" placeholder="Enter name to search">
+        <button onclick="searchResume()">Search</button>
+        <div class="loading" id="searchLoading"></div>
+        <div id="searchResponse" class="response"></div>
+    </div>
+
+    <script>
+        let token = '';
+
+        function showLoading(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function hideLoading(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function formatResponse(element, data, isError = false) {
+            element.textContent = JSON.stringify(data, null, 2);
+            element.className = `response ${isError ? 'error' : 'success'}`;
+        }
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const responseElement = document.getElementById('loginResponse');
+            
+            showLoading('loginLoading');
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                formatResponse(responseElement, data, !response.ok);
+                
+                if (data.JWT) {
+                    token = data.JWT;
+                }
+            } catch (error) {
+                formatResponse(responseElement, { error: error.message }, true);
+            } finally {
+                hideLoading('loginLoading');
+            }
+        }
+
+        async function enrichResume() {
+            const url = document.getElementById('pdfUrl').value;
+            const responseElement = document.getElementById('enrichResponse');
+            
+            showLoading('enrichLoading');
+            
+            try {
+                const response = await fetch('/api/resume/enrich', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ url })
+                });
+                
+                const data = await response.json();
+                formatResponse(responseElement, data, !response.ok);
+            } catch (error) {
+                formatResponse(responseElement, { error: error.message }, true);
+            } finally {
+                hideLoading('enrichLoading');
+            }
+        }
+
+        async function searchResume() {
+            const name = document.getElementById('searchName').value;
+            const responseElement = document.getElementById('searchResponse');
+            
+            showLoading('searchLoading');
+            
+            try {
+                const response = await fetch('/api/resume/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name })
+                });
+                
+                const data = await response.json();
+                formatResponse(responseElement, data, !response.ok);
+            } catch (error) {
+                formatResponse(responseElement, { error: error.message }, true);
+            } finally {
+                hideLoading('searchLoading');
+            }
+        }
+    </script>
+</body>
+</html> 
