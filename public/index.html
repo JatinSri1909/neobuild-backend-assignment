@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Analysis API Demo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,11 +13,11 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
-            background-color: #f5f7fa;
-            color: #2d3748;
-            max-width: 1000px;
+            background-color: #1c1c1c;
+            color: #f0f0f0;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -26,64 +26,86 @@
             text-align: center;
             margin-bottom: 40px;
             padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: #2c2c2c;
+            border-radius: 8px;
+            border: 1px solid #3c3c3c;
         }
 
         .header h1 {
-            color: #2c5282;
+            color: #ff6c37;
             font-size: 2.5em;
             margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #b4b4b4;
         }
 
         .container {
-            background: #fff;
+            background: #2c2c2c;
             margin-bottom: 30px;
             padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            border-radius: 8px;
+            border: 1px solid #3c3c3c;
+            transition: all 0.3s ease;
         }
 
         .container:hover {
-            transform: translateY(-2px);
+            border-color: #ff6c37;
+            box-shadow: 0 0 10px rgba(255, 108, 55, 0.1);
         }
 
         h2 {
-            color: #2c5282;
+            color: #ff6c37;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 1px solid #3c3c3c;
+            display: flex;
+            align-items: center;
+        }
+
+        h2::before {
+            content: '→';
+            margin-right: 10px;
+            color: #ff6c37;
         }
 
         .info-text {
-            color: #718096;
+            color: #b4b4b4;
             font-size: 0.9em;
             margin-bottom: 15px;
-            padding: 10px;
-            background: #edf2f7;
-            border-radius: 5px;
+            padding: 12px;
+            background: #232323;
+            border-radius: 6px;
+            border: 1px solid #3c3c3c;
+            font-family: monospace;
         }
 
         input[type="text"] {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
-            border: 2px solid #e2e8f0;
+            background: #232323;
+            border: 1px solid #3c3c3c;
             border-radius: 6px;
+            color: #f0f0f0;
             font-size: 1em;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #4299e1;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+            border-color: #ff6c37;
+            box-shadow: 0 0 0 2px rgba(255, 108, 55, 0.2);
+        }
+
+        input[type="text"]::placeholder {
+            color: #666;
         }
 
         button {
-            background-color: #4299e1;
+            background-color: #ff6c37;
             color: white;
             padding: 12px 24px;
             border: none;
@@ -91,12 +113,13 @@
             cursor: pointer;
             font-size: 1em;
             font-weight: 500;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             width: 100%;
+            margin-top: 10px;
         }
 
         button:hover {
-            background-color: #2b6cb0;
+            background-color: #ff8157;
             transform: translateY(-1px);
         }
 
@@ -107,38 +130,65 @@
         .response {
             margin-top: 15px;
             padding: 15px;
-            background-color: #f7fafc;
-            border: 1px solid #e2e8f0;
+            background-color: #232323;
+            border: 1px solid #3c3c3c;
             border-radius: 6px;
-            font-family: monospace;
+            font-family: 'Monaco', 'Menlo', monospace;
             white-space: pre-wrap;
             overflow-x: auto;
             font-size: 0.9em;
+            color: #b4b4b4;
             position: relative;
+        }
+
+        .response.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .response.error {
+            border-left: 4px solid #f44336;
         }
 
         .response:empty {
             display: none;
         }
 
-        .status {
+        .method-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #ff6c37;
+            color: white;
+            font-size: 0.8em;
+            margin-right: 10px;
+        }
+
+        .endpoint {
+            color: #b4b4b4;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .loading {
             display: none;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 6px;
             text-align: center;
+            margin: 10px 0;
+            color: #ff6c37;
         }
 
-        .status.success {
-            display: block;
-            background-color: #c6f6d5;
-            color: #2f855a;
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #3c3c3c;
+            border-radius: 50%;
+            border-top-color: #ff6c37;
+            animation: spin 1s ease-in-out infinite;
         }
 
-        .status.error {
-            display: block;
-            background-color: #fed7d7;
-            color: #c53030;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -155,67 +205,76 @@
             }
         }
 
-        /* Loading spinner */
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 10px 0;
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
 
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #e2e8f0;
-            border-radius: 50%;
-            border-top-color: #4299e1;
-            animation: spin 1s ease-in-out infinite;
+        ::-webkit-scrollbar-track {
+            background: #232323;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        ::-webkit-scrollbar-thumb {
+            background: #3c3c3c;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6c37;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Resume Analysis API Demo</h1>
-        <p>Test the Resume Analysis API endpoints</p>
+        <h1>Resume Analysis API</h1>
+        <p>Test your API endpoints</p>
     </div>
 
     <!-- Login Section -->
     <div class="container">
-        <h2>1. Authentication</h2>
+        <h2>
+            <span class="method-badge">POST</span>
+            <span class="endpoint">/api/auth/login</span>
+        </h2>
         <div class="info-text">
             Default credentials:<br>
-            Username: "naval.ravikant"<br>
-            Password: "05111974"
+            {<br>
+            &nbsp;&nbsp;"username": "naval.ravikant",<br>
+            &nbsp;&nbsp;"password": "05111974"<br>
+            }
         </div>
-        <input type="text" id="username" placeholder="Enter username">
-        <input type="text" id="password" placeholder="Enter password">
-        <button onclick="login()">Login</button>
+        <input type="text" id="username" placeholder="Enter username" spellcheck="false">
+        <input type="text" id="password" placeholder="Enter password" spellcheck="false">
+        <button onclick="login()">Send Request</button>
         <div class="loading" id="loginLoading"></div>
         <div id="loginResponse" class="response"></div>
     </div>
 
     <!-- Resume Enrichment Section -->
     <div class="container">
-        <h2>2. Resume Enrichment</h2>
+        <h2>
+            <span class="method-badge">POST</span>
+            <span class="endpoint">/api/resume/enrich</span>
+        </h2>
         <div class="info-text">
-            Test URL: https://www.dhli.in/uploaded_files/resumes/resume_3404.pdf
+            Test URL:<br>
+            https://www.dhli.in/uploaded_files/resumes/resume_3404.pdf
         </div>
-        <input type="text" id="pdfUrl" placeholder="Enter PDF URL">
-        <button onclick="enrichResume()">Enrich Resume</button>
+        <input type="text" id="pdfUrl" placeholder="Enter PDF URL" spellcheck="false">
+        <button onclick="enrichResume()">Send Request</button>
         <div class="loading" id="enrichLoading"></div>
         <div id="enrichResponse" class="response"></div>
     </div>
 
     <!-- Resume Search Section -->
     <div class="container">
-        <h2>3. Resume Search</h2>
-        <input type="text" id="searchName" placeholder="Enter name to search">
-        <button onclick="searchResume()">Search</button>
+        <h2>
+            <span class="method-badge">POST</span>
+            <span class="endpoint">/api/resume/search</span>
+        </h2>
+        <input type="text" id="searchName" placeholder="Enter name to search" spellcheck="false">
+        <button onclick="searchResume()">Send Request</button>
         <div class="loading" id="searchLoading"></div>
         <div id="searchResponse" class="response"></div>
     </div>
